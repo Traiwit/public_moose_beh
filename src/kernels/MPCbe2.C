@@ -32,8 +32,12 @@ using namespace std;
 #include "DelimitedFileReader.h"
 #include "MooseException.h"
 #include "libmesh/point.h"
+#include "DelimitedFileReader.h"
+#include "MooseUtils.h"
+#include "MooseError.h"
+#include "pcrecpp.h"
 
-registerMooseAction("moose_behApp", MPCbe2, "add_constraint");
+registerMooseAction("traiApp", MPCbe2, "add_constraint");
 
 InputParameters
 MPCbe2::validParams()
@@ -66,50 +70,38 @@ MPCbe2::act()
 {
 
 
-  MooseUtils::DelimitedFileReader csv_reader(getParam<FileName>("csv_file"), &_communicator);
+  MooseUtils::DelimitedFileReader reader(getParam<FileName>("csv_file"), &_communicator);
   if (isParamValid("header"))
-  csv_reader.setHeaderFlag(getParam<bool>("header")
+  reader.setHeaderFlag(getParam<bool>("header")
                                ? MooseUtils::DelimitedFileReader::HeaderFlag::ON
                                : MooseUtils::DelimitedFileReader::HeaderFlag::OFF);
 
-  csv_reader.read();
-  const std::vector<std::string> & names = csv_reader.getNames();
-    const std::vector<std::vector<double>> & data = csv_reader.getData();
+  reader.read();
+    const std::vector<std::string> & names = reader.getNames();
+    const std::vector<std::vector<double>> & data = reader.getData();
 
-    int column = (sizeof(data)*data.size())+data.size();
-
- // for (unsigned cur_num = 0; cur_num<secondary_node_ids.size() ; cur_num++)
- for (unsigned cur_num = 0; cur_num<column ; cur_num++)
+ for (unsigned cur_num = 0; cur_num<10000000 ; cur_num++)
 {
 
   std::vector<Real> weights_in (1);
   std::vector<unsigned int> primary_node_ids_in (1);
-  std::vector<unsigned int> secondary_node_ids_in_1 (1);
-  std::vector<unsigned int> secondary_node_ids_in_2 (1);
-
+  std::vector<unsigned int> secondary_node_ids_in(1);
 
   weights_in.at(0) = 1;
-  primary_node_ids_in.at(0) = data[0][cur_num];
-  secondary_node_ids_in_1.at(0) =  data[1][cur_num];
-  std::vector<unsigned int> secondary_node_ids_in_final(secondary_node_ids_in_1);
+  primary_node_ids_in.at(0) = data[1][cur_num];
+  secondary_node_ids_in.at(0) =  data[0][cur_num];
 
-  // for (unsigned n = 2; n<3 ; n++)
-  // {
+        if (primary_node_ids_in.at(0) == 0){
+            break;
+        }
 
-  secondary_node_ids_in_2.at(0) =  data[2][cur_num];
-
-  secondary_node_ids_in_final.insert(secondary_node_ids_in_final.end(), secondary_node_ids_in_2.begin(), secondary_node_ids_in_2.end());
-
-  //
-  // }
-
-  InputParameters params = _factory.getValidParams("LinearNodalConstraint");
+  InputParameters params = _factory.getValidParams("LinearNodalConstraintBE");
   params.set<NonlinearVariableName>("variable") = "porepressure";
   params.set<std::vector<Real>>("weights")= weights_in;
   params.set<std::vector<unsigned int>>("primary") = primary_node_ids_in;
-  params.set<std::vector<unsigned int>>("secondary_node_ids") = secondary_node_ids_in_final;
-  params.set<Real>("penalty") = 2e10;
-  _problem->addConstraint("LinearNodalConstraint", "MPCbe2" + Moose::stringify(cur_num), params);
+  params.set<std::vector<unsigned int>>("secondary_node_ids") = secondary_node_ids_in;
+  params.set<Real>("penalty") = 1e10;
+  _problem->addConstraint("LinearNodalConstraintBE", "MPCbe2" + Moose::stringify(cur_num), params);
 
 }
 }
