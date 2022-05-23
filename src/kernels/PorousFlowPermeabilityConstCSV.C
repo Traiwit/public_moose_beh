@@ -11,7 +11,7 @@
 #include <iostream>
 #include <algorithm>
 
-registerMooseObject("moose_behApp", PorousFlowPermeabilityConstCSV);
+registerMooseObject("MOOSE_BEHApp", PorousFlowPermeabilityConstCSV);
 
 InputParameters
 PorousFlowPermeabilityConstCSV::validParams()

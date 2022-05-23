@@ -37,7 +37,7 @@ using namespace std;
 #include "MooseError.h"
 #include "pcrecpp.h"
 
-registerMooseAction("traiApp", MPCbe2, "add_constraint");
+registerMooseAction("MOOSE_BEHApp", MPCbe2, "add_constraint");
 
 InputParameters
 MPCbe2::validParams()

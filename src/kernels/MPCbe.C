@@ -23,7 +23,7 @@
 #include "libmesh/string_to_enum.h"
 #include "libmesh/fe.h"
 
-registerMooseAction("moose_behApp", MPCbe, "add_constraint");
+registerMooseAction("MOOSE_BEHApp", MPCbe, "add_constraint");
 
 InputParameters
 MPCbe::validParams()

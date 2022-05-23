@@ -9,7 +9,7 @@
 
 #include "PorousFlowPorosityConstCSV.h"
 
-registerMooseObject("moose_behApp", PorousFlowPorosityConstCSV);
+registerMooseObject("MOOSE_BEHApp", PorousFlowPorosityConstCSV);
 
 InputParameters
 PorousFlowPorosityConstCSV::validParams()

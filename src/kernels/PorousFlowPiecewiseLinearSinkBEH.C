@@ -9,7 +9,7 @@
 
 #include "PorousFlowPiecewiseLinearSinkBEH.h"
 
-registerMooseObject("moose_behApp", PorousFlowPiecewiseLinearSinkBEH);
+registerMooseObject("MOOSE_BEHApp", PorousFlowPiecewiseLinearSinkBEH);
 
 InputParameters
 PorousFlowPiecewiseLinearSinkBEH::validParams()

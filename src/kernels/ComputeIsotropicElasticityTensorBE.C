@@ -9,8 +9,8 @@
 
 #include "ComputeIsotropicElasticityTensorBE.h"
 
-registerMooseObject("moose_behApp", ComputeIsotropicElasticityTensorBE);
-registerMooseObject("moose_behApp", ADComputeIsotropicElasticityTensorBE);
+registerMooseObject("MOOSE_BEHApp", ComputeIsotropicElasticityTensorBE);
+registerMooseObject("MOOSE_BEHApp", ADComputeIsotropicElasticityTensorBE);
 
 template <bool is_ad>
 InputParameters

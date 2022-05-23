@@ -10,7 +10,7 @@
 #include "GenericConstantArrayBEH.h"
 #include "libmesh/quadrature.h"
 
-registerMooseObject("moose_behApp", GenericConstantArrayBEH);
+registerMooseObject("MOOSE_BEHApp", GenericConstantArrayBEH);
 
 
 InputParameters

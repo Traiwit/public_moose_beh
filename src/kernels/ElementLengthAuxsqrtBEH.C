@@ -14,7 +14,7 @@
 #include <cmath>
 #include <math.h>
 
-registerMooseObject("moose_behApp", ElementLengthAuxsqrtBEH);
+registerMooseObject("MOOSE_BEHApp", ElementLengthAuxsqrtBEH);
 
 
 InputParameters

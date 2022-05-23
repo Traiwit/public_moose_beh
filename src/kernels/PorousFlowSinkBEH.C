@@ -19,7 +19,7 @@
 #include "CoupledForce.h"
 #include "MooseVariable.h"
 
-registerMooseObject("moose_behApp", PorousFlowSinkBEH);
+registerMooseObject("MOOSE_BEHApp", PorousFlowSinkBEH);
 
 InputParameters
 PorousFlowSinkBEH::validParams()
