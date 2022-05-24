@@ -10,26 +10,26 @@ Created on Wed Mar  2 13:40:58 2022
 
 import csv
 
-surf_list = list(csv.reader(open('OLIMPIADA_surface_list.csv')))   #read in the csv file
+surf_list = list(csv.reader(open('GNKT_9steps_surfacelist.csv')))   #read in the csv file
 
-damage_file_list = list(csv.reader(open('OLIMPIADA_damage_list_test_ver.csv')))
+damage_file_list = list(csv.reader(open('GNKT_9steps_damagelist.csv')))
 
 frame_num = len(surf_list)
 
-MESH_file = 'OLIMP2021087_G02HTv2_MOOSEMESH_final.inp'
-PERM_file = 'OLIMP2021087_G02HTv2_MATPROPS_PERM.csv' # perm file name
-PORO_file = 'OLIMP2021087_G02HTv2_MATPROPS_PORO.csv' # poro file name
-MPC_file = 'OLIMP2021087_G02HTv2_MOOSEMPCS_MPCs.csv' #MPC file name
-damage_0_file = 'EXCHG_0000_LOGP.inp'
-fol = 'OLIMPIADA2022' #folder prop_name
-project_tag = 'OLIMPIADA2022' #project name
+MESH_file = 'GNKT2020066_G01HTv1_D01_Q01_v7_MOOSEMESH.inp'
+PERM_file = 'GNKT2020066_G01HTv1_D01_Q01_v5_MATPROPS_PERM.csv' # perm file name
+PORO_file = 'GNKT2020066_G01HTv1_D01_Q01_v5_MATPROPS_PORO.csv' # poro file name
+MPC_file = 'GNKT2020066_G01HTv1_D01_Q01_v7_MOOSEMPCS_MPCs.csv' #MPC file name
+project_tag = 'GNKT_short_9steps' #project name
+app_name = 'moose_beh-opt'
+directory = '/home/moose/projects' #project directory
 
 # parameters
-y_pos = 8956.35
-y_neg = -7046.2
-x_pos = 10045.5
-x_neg = -5957
-z_zero_level = 760
+y_pos = 5700
+y_neg = -4449.01
+x_pos = 5110
+x_neg = -4135.03
+z_zero_level = 120
 flux_fx = 10
 
 
@@ -130,7 +130,7 @@ for block in range(1, frame_num):
 
             with open(project_tag+'_'+surf_name+'_surface.i', 'a') as f:
                    f.write('[Outputs] \n'
-                           'file_base = '+'%s/%s_%s \n' %(fol,project_tag,surf_name) +
+                           'file_base = '+'%s/%s/%s_%s \n' %(directory,project_tag,project_tag,surf_name) +
                            'perf_graph = true \n'
                             '[./run_'+'%s] \n' %surf_name +
                               'type = Exodus \n'
@@ -373,8 +373,8 @@ for block in range(1, frame_num):
 
                #%% producing Equal model
 
-
-               equal_name = surf_list[0][0]
+               damage_0_file = damage_file_list[0][0];
+               equal_name = surf_list[0][0];
 
                with open(project_tag+'_'+equal_name+'_base.i', 'w') as f:
                     f.write('[Mesh]\n'
@@ -635,7 +635,7 @@ for block in range(1, frame_num):
                             '[] \n'
 
                             '[Outputs] \n'
-                           'file_base = '+'%s/%s_%s \n' %(fol,project_tag,equal_name) +
+                           'file_base = '+'%s/%s/%s_%s \n' %(directory,project_tag,project_tag,equal_name) +
                            'perf_graph = true \n'
                             '[./run_'+'%s] \n' %equal_name +
                               'type = Exodus \n'
@@ -655,7 +655,7 @@ for block in range(1, frame_num):
 
 with open('run_command.sh', 'w') as f:
 
-                f.write('mpiexec -n %s ./trai-opt -i ./%s/%s_%s_base.i ./%s/%s_%s_surface.i --n-threads=4 --t \n' %(mpi, fol,project_tag,equal_name,fol,project_tag,equal_name) +
+                f.write('mpiexec -n %s ./%s -i ~/projects/%s/%s_%s_base.i ~/projects/%s/%s_%s_surface.i --n-threads=4 --t \n' %(mpi,app_name,project_tag,project_tag,equal_name,project_tag,project_tag,equal_name) +
                             'echo done \n'
                             )
 
@@ -664,7 +664,7 @@ with open('run_command.sh', 'w') as f:
 
                     f.write(
 
-                            'mpiexec -n %s ./trai-opt -i ./%s/%s_%s_base.i ./%s/%s_%s_surface.i --n-threads=4 --t \n' %(mpi, fol,project_tag,surf_name,fol,project_tag,surf_name) +
+                            'mpiexec -n %s ./%s -i ~/projects/%s/%s_%s_base.i ~/projects/%s/%s_%s_surface.i --n-threads=4 --t \n' %(mpi,app_name,project_tag,project_tag,surf_name,project_tag,project_tag,surf_name) +
                             'echo done \n'
 
                             )
