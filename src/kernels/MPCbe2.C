@@ -95,13 +95,13 @@ MPCbe2::act()
             break;
         }
 
-  InputParameters params = _factory.getValidParams("LinearNodalConstraintBE");
+  InputParameters params = _factory.getValidParams("LinearNodalConstraint");
   params.set<NonlinearVariableName>("variable") = "porepressure";
   params.set<std::vector<Real>>("weights")= weights_in;
   params.set<std::vector<unsigned int>>("primary") = primary_node_ids_in;
   params.set<std::vector<unsigned int>>("secondary_node_ids") = secondary_node_ids_in;
   params.set<Real>("penalty") = 1e10;
-  _problem->addConstraint("LinearNodalConstraintBE", "MPCbe2" + Moose::stringify(cur_num), params);
+  _problem->addConstraint("LinearNodalConstraint", "MPCbe2" + Moose::stringify(cur_num), params);
 
 }
 }
