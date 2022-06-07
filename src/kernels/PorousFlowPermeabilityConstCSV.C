@@ -32,16 +32,17 @@ PorousFlowPermeabilityConstCSV::validParams()
 }
 
 PorousFlowPermeabilityConstCSV::PorousFlowPermeabilityConstCSV(const InputParameters & parameters)
-  : PorousFlowPermeabilityBase(parameters), _damage(getMaterialProperty<Real>("damage")),
+  : PorousFlowPermeabilityBase(parameters),
   _read_prop_user_object(isParamValid("read_prop_user_object")
                              ? &getUserObject<ElementPropertyReadFile>("read_prop_user_object")
                              : nullptr),
   _mat_prop(declareProperty<RealVectorValue>("Euler_angles")),
+  _damage(getMaterialProperty<Real>("damage")),
+  _excav_perm(getMaterialProperty<Real>("excav_perm")),
   _aw(declareProperty<RealVectorValue>("aw")),
   _kmax(declareProperty<RealVectorValue>("kmax")),
   _RMD_max(declareProperty<RealVectorValue>("RMD_MAX")),
-  _perm(declareProperty<RealVectorValue>("perm_tensor")),
-  _excav_perm(getMaterialProperty<Real>("excav_perm"))
+  _perm(declareProperty<RealVectorValue>("perm_tensor"))
 {
 
 }

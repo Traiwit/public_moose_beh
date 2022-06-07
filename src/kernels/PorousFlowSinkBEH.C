@@ -82,7 +82,7 @@ PorousFlowSinkBEH::validParams()
 }
 
 PorousFlowSinkBEH::PorousFlowSinkBEH(const InputParameters & parameters)
-  : IntegratedBC(parameters), _v(coupledValue("v")),
+  : IntegratedBC(parameters),
     _dictator(getUserObject<PorousFlowDictator>("PorousFlowDictator")),
     _involves_fluid(isParamValid("fluid_phase")),
     _ph(_involves_fluid ? getParam<unsigned int>("fluid_phase") : 0),
@@ -176,7 +176,8 @@ PorousFlowSinkBEH::PorousFlowSinkBEH(const InputParameters & parameters)
                                     ? &getMaterialProperty<std::vector<RealTensorValue>>(
                                           "dPorousFlow_thermal_conductivity_qp_dvar")
                                     : nullptr),
-    _perm_derivs(_dictator.usePermDerivs())
+    _perm_derivs(_dictator.usePermDerivs()),
+    _v(coupledValue("v"))
 {
   if (_involves_fluid && _ph >= _dictator.numPhases())
     paramError("fluid_phase",

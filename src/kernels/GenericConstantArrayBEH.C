@@ -37,10 +37,10 @@ GenericConstantArrayBEH::GenericConstantArrayBEH(const InputParameters & paramet
     _prop_name(getParam<std::string>("prop_name")),
     // _prop_value(getParam<RealEigenVector>("prop_value")),
     _property(declareProperty<Real>(_prop_name)),
-    _mat_prop(declareProperty<Real>("prop_value")),
     _read_prop_user_object(isParamValid("read_prop_user_object")
                                ? &getUserObject<ElementPropertyReadFile>("read_prop_user_object")
-                               : nullptr)
+                               : nullptr),
+   _mat_prop(declareProperty<Real>("prop_value"))
 {
 }
 

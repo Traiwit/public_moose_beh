@@ -26,11 +26,12 @@ PorousFlowPorosityConstCSV::validParams()
 }
 
 PorousFlowPorosityConstCSV::PorousFlowPorosityConstCSV(const InputParameters & parameters)
-  : PorousFlowPorosityBase(parameters),_damage(getMaterialProperty<Real>("damage")),
+  : PorousFlowPorosityBase(parameters),
   _read_prop_user_object(isParamValid("read_prop_user_object")
                              ? &getUserObject<ElementPropertyReadFile>("read_prop_user_object")
                              : nullptr),
   _mat_prop(declareProperty<Real>("container")),
+  _damage(getMaterialProperty<Real>("damage")),
   _excav_poro(getMaterialProperty<Real>("excav_poro"))
 {
 }

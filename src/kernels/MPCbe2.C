@@ -58,18 +58,14 @@ params.addParam<bool>("header",
   return params;
 }
 
-
-
 MPCbe2::MPCbe2(const InputParameters & params)
   : Action(params)
 {
 }
+
 void
 MPCbe2::act()
-
 {
-
-
   MooseUtils::DelimitedFileReader reader(getParam<FileName>("csv_file"), &_communicator);
   if (isParamValid("header"))
   reader.setHeaderFlag(getParam<bool>("header")
@@ -77,31 +73,30 @@ MPCbe2::act()
                                : MooseUtils::DelimitedFileReader::HeaderFlag::OFF);
 
   reader.read();
-    const std::vector<std::string> & names = reader.getNames();
-    const std::vector<std::vector<double>> & data = reader.getData();
+  const std::vector<std::vector<double>> & data = reader.getData();
 
- for (unsigned cur_num = 0; cur_num<10000000 ; cur_num++)
-{
+  for (unsigned cur_num = 0; cur_num<10000000 ; cur_num++)
+  {
 
-  std::vector<Real> weights_in (1);
-  std::vector<unsigned int> primary_node_ids_in (1);
-  std::vector<unsigned int> secondary_node_ids_in(1);
+    std::vector<Real> weights_in (1);
+    std::vector<unsigned int> primary_node_ids_in (1);
+    std::vector<unsigned int> secondary_node_ids_in(1);
 
-  weights_in.at(0) = 1;
-  primary_node_ids_in.at(0) = data[1][cur_num];
-  secondary_node_ids_in.at(0) =  data[0][cur_num];
+    weights_in.at(0) = 1;
+    primary_node_ids_in.at(0) = data[1][cur_num];
+    secondary_node_ids_in.at(0) =  data[0][cur_num];
 
-        if (primary_node_ids_in.at(0) == 0){
-            break;
-        }
+          if (primary_node_ids_in.at(0) == 0){
+              break;
+          }
 
-  InputParameters params = _factory.getValidParams("LinearNodalConstraint");
-  params.set<NonlinearVariableName>("variable") = "porepressure";
-  params.set<std::vector<Real>>("weights")= weights_in;
-  params.set<std::vector<unsigned int>>("primary") = primary_node_ids_in;
-  params.set<std::vector<unsigned int>>("secondary_node_ids") = secondary_node_ids_in;
-  params.set<Real>("penalty") = 1e10;
-  _problem->addConstraint("LinearNodalConstraint", "MPCbe2" + Moose::stringify(cur_num), params);
+    InputParameters params = _factory.getValidParams("LinearNodalConstraint");
+    params.set<NonlinearVariableName>("variable") = "porepressure";
+    params.set<std::vector<Real>>("weights")= weights_in;
+    params.set<std::vector<unsigned int>>("primary") = primary_node_ids_in;
+    params.set<std::vector<unsigned int>>("secondary_node_ids") = secondary_node_ids_in;
+    params.set<Real>("penalty") = 1e10;
+    _problem->addConstraint("LinearNodalConstraint", "MPCbe2" + Moose::stringify(cur_num), params);
 
-}
+  }
 }
