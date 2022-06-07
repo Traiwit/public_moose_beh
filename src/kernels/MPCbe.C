@@ -32,7 +32,6 @@ using namespace std;
 #include "libmesh/explicit_system.h"
 #include "libmesh/string_to_enum.h"
 #include "libmesh/fe.h"
-
 #include "gtest/gtest.h"
 
 // MOOSE includes
@@ -41,7 +40,7 @@ using namespace std;
 #include "libmesh/point.h"
 #include "GeneralVectorPostprocessor.h"
 
-registerMooseAction("traiApp", MPCbe, "add_constraint");
+registerMooseAction("MOOSE_BEHApp", MPCbe, "add_constraint");
 
 InputParameters
 MPCbe::validParams()
@@ -92,11 +91,8 @@ for (unsigned cur_num = 0; cur_num<10000000 ; cur_num++)
   std::vector<Real> weights_in (1);
   std::vector<unsigned int> primary_node_ids_in (1);
   std::vector<unsigned int> secondary_node_ids_in_1 (1);
-  std::vector<unsigned int> secondary_node_ids_in_2 (1);
-
-  if (primary_node_ids_in.at(0) == 0){
-      break;
-  }
+  std::vector
+  <unsigned int> secondary_node_ids_in_2 (1);
 
   weights_in.at(0) = 1;
   primary_node_ids_in.at(0) = data[0][cur_num];
@@ -114,14 +110,16 @@ for (unsigned cur_num = 0; cur_num<10000000 ; cur_num++)
   sort( secondary_node_ids_in_final.begin(), secondary_node_ids_in_final.end() );
   secondary_node_ids_in_final.erase( unique( secondary_node_ids_in_final.begin(), secondary_node_ids_in_final.end() ), secondary_node_ids_in_final.end() );
 
-
+  if (primary_node_ids_in.at(0) == 0){
+      break;
+  }
 
   InputParameters params = _factory.getValidParams("LinearNodalConstraint");
   params.set<NonlinearVariableName>("variable") = "porepressure";
   params.set<std::vector<Real>>("weights")= weights_in;
   params.set<std::vector<unsigned int>>("primary") = primary_node_ids_in;
   params.set<std::vector<unsigned int>>("secondary_node_ids") = secondary_node_ids_in_final;
-  params.set<Real>("penalty") = 1e5;
+  params.set<Real>("penalty") = 1e10;
   _problem->addConstraint("LinearNodalConstraint", "MPCbe" + Moose::stringify(cur_num), params);
 
 }
