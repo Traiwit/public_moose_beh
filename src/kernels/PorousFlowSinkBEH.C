@@ -82,7 +82,7 @@ PorousFlowSinkBEH::validParams()
 }
 
 PorousFlowSinkBEH::PorousFlowSinkBEH(const InputParameters & parameters)
-  : IntegratedBC(parameters), _v(coupledValue("v")),
+  : IntegratedBC(parameters),
     _dictator(getUserObject<PorousFlowDictator>("PorousFlowDictator")),
     _involves_fluid(isParamValid("fluid_phase")),
     _ph(_involves_fluid ? getParam<unsigned int>("fluid_phase") : 0),
@@ -176,7 +176,8 @@ PorousFlowSinkBEH::PorousFlowSinkBEH(const InputParameters & parameters)
                                     ? &getMaterialProperty<std::vector<RealTensorValue>>(
                                           "dPorousFlow_thermal_conductivity_qp_dvar")
                                     : nullptr),
-    _perm_derivs(_dictator.usePermDerivs())
+    _perm_derivs(_dictator.usePermDerivs()),
+    _v(coupledValue("v"))
 {
   if (_involves_fluid && _ph >= _dictator.numPhases())
     paramError("fluid_phase",
@@ -188,8 +189,9 @@ PorousFlowSinkBEH::PorousFlowSinkBEH(const InputParameters & parameters)
 
   if (!_involves_fluid && (_use_mass_fraction || _use_mobility || _use_relperm || _use_enthalpy ||
                            _use_internal_energy))
-    mooseError("PorousFlowSinkBEH: To use_mass_fraction, use_mobility, use_relperm, use_enthalpy or "
-               "use_internal_energy, you must provide a fluid phase number");
+    mooseError(
+        "PorousFlowSinkBEH: To use_mass_fraction, use_mobility, use_relperm, use_enthalpy or "
+        "use_internal_energy, you must provide a fluid phase number");
 
   if (_use_mass_fraction && _sp >= _dictator.numComponents())
     paramError("mass_fraction_component",
@@ -213,16 +215,17 @@ PorousFlowSinkBEH::PorousFlowSinkBEH(const InputParameters & parameters)
         "PorousFlowSinkBEH: You have used the use_relperm flag, but you have no relperm Material");
 
   if (_use_enthalpy && !_has_enthalpy)
-    mooseError(
-        "PorousFlowSinkBEH: You have used the use_enthalpy flag, but you have no enthalpy Material");
+    mooseError("PorousFlowSinkBEH: You have used the use_enthalpy flag, but you have no enthalpy "
+               "Material");
 
   if (_use_internal_energy && !_has_internal_energy)
     mooseError("PorousFlowSinkBEH: You have used the use_internal_energy flag, but you have no "
                "internal_energy Material");
 
   if (_use_thermal_conductivity && !_has_thermal_conductivity)
-    mooseError("PorousFlowSinkBEH: You have used the use_thermal_conductivity flag, but you have no "
-               "thermal_conductivity Material");
+    mooseError(
+        "PorousFlowSinkBEH: You have used the use_thermal_conductivity flag, but you have no "
+        "thermal_conductivity Material");
 }
 
 Real
@@ -281,7 +284,8 @@ PorousFlowSinkBEH::jac(unsigned int jvar) const
   if (_use_mobility)
   {
     const Real k = ((*_permeability)[_qp] * _normals[_qp]) * _normals[_qp];
-    const Real mob = (*_fluid_density_node)[_i][_ph] * k / ((_v[_qp]) * (*_fluid_viscosity)[_i][_ph]);
+    const Real mob =
+        (*_fluid_density_node)[_i][_ph] * k / ((_v[_qp]) * (*_fluid_viscosity)[_i][_ph]);
 
     Real mobprime = 0.0;
     if (_perm_derivs)

@@ -16,22 +16,24 @@ PorousFlowPorosityConstCSV::validParams()
 {
   InputParameters params = PorousFlowPorosityBase::validParams();
   params.addParam<UserObjectName>("read_prop_user_object",
-                                      "The ElementReadPropertyFile "
-                                      "GeneralUserObject to read element "
-                                      "specific property values from file");
+                                  "The ElementReadPropertyFile "
+                                  "GeneralUserObject to read element "
+                                  "specific property values from file");
   params.addClassDescription("This Material calculates the porosity assuming it is constant");
-  params.addParam<MaterialPropertyName>("excav_poro", 0 ,"The coupled variable which provides the force");
-  params.addParam<MaterialPropertyName>("damage",0,"damage");
+  params.addParam<MaterialPropertyName>(
+      "excav_poro", 0, "The coupled variable which provides the force");
+  params.addParam<MaterialPropertyName>("damage", 0, "damage");
   return params;
 }
 
 PorousFlowPorosityConstCSV::PorousFlowPorosityConstCSV(const InputParameters & parameters)
-  : PorousFlowPorosityBase(parameters),_damage(getMaterialProperty<Real>("damage")),
-  _read_prop_user_object(isParamValid("read_prop_user_object")
-                             ? &getUserObject<ElementPropertyReadFile>("read_prop_user_object")
-                             : nullptr),
-  _mat_prop(declareProperty<Real>("container")),
-  _excav_poro(getMaterialProperty<Real>("excav_poro"))
+  : PorousFlowPorosityBase(parameters),
+    _read_prop_user_object(isParamValid("read_prop_user_object")
+                               ? &getUserObject<ElementPropertyReadFile>("read_prop_user_object")
+                               : nullptr),
+    _mat_prop(declareProperty<Real>("container")),
+    _damage(getMaterialProperty<Real>("damage")),
+    _excav_poro(getMaterialProperty<Real>("excav_poro"))
 {
 }
 
@@ -40,15 +42,16 @@ PorousFlowPorosityConstCSV::initQpStatefulProperties()
 {
 
   if (_current_elem->id() > _mesh.nElem())
-       _console << _current_elem->true_centroid();
+    _console << _current_elem->true_centroid();
 
-  if (_damage[_qp] < -100){
+  if (_damage[_qp] < -100)
+  {
     _porosity[_qp] = 1;
   }
-  else {
+  else
+  {
     _porosity[_qp] = _read_prop_user_object->getData(_current_elem, 0) + _excav_poro[_qp];
   }
-
 }
 
 void

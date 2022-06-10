@@ -59,11 +59,11 @@ perf_graph = true
 [./run_DRAINSRF_F009_UG5]
 type = Exodus
 execute_on = 'final'
-file_base = /home/moose/projects/GNKT_short_9steps/GNKT_short_9steps_EQUAL
+file_base = GNKT_short_9steps_EQUAL
 [../]
 [./pwp_list]
 type = CSV
-file_base = /home/moose/projects/GNKT_short_9steps/GNKT_short_9steps_EQUAL_pwp_list
+file_base = GNKT_short_9steps_EQUAL_pwp_list
 execute_on = FINAL
 []
 []

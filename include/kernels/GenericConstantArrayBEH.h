@@ -13,7 +13,6 @@
 #include "ElementPropertyReadFile.h"
 #include "RankTwoTensor.h"
 
-
 class GenericConstantArrayBEH : public Material
 {
 public:
@@ -26,12 +25,11 @@ protected:
   virtual void computeQpProperties() override;
 
   std::string _prop_name;
-//* const RealEigenVector & _prop_value;
+  //* const RealEigenVector & _prop_value;
 
   MaterialProperty<Real> & _property;
 
-  const ElementPropertyReadFile * const _read_prop_user_object;
-
   MaterialProperty<Real> & _mat_prop;
 
+  const ElementPropertyReadFile * const _read_prop_user_object;
 };
